@@ -92,9 +92,9 @@ public class CatalogByTitle extends ListActivity {
 //        application.setCurrentReview(this.reviews.get(position));
 //
 //        // startFrom page is not stored in application, for example purposes it's a simple "extra"
-//        Intent intent = new Intent(Constants.INTENT_ACTION_VIEW_DETAIL);
-//        intent.putExtra(Constants.STARTFROM_EXTRA, getIntent().getIntExtra(Constants.STARTFROM_EXTRA, 1));
-//        startActivity(intent);
+        Intent intent = new Intent(Constants.INTENT_ACTION_PRODUCT_DETAIL);
+        intent.putExtra(Constants.PRODUCT_ID, catalog.get((int)id).get_product_id());
+        startActivity(intent);
     }    
 
 }

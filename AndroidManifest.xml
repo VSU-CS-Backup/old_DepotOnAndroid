@@ -32,6 +32,12 @@
 		<activity android:name=".CatalogByPopularity" android:label="@string/catalog_by_popularity">
 		</activity>
 
+		<activity android:name=".Product" android:label="@string/product">
+			<intent-filter>
+				<action android:name="com.depot.cs4900.PRODUCT_DETAIL" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
     </application>
     
     <uses-permission android:name="android.permission.CALL_PHONE" />
