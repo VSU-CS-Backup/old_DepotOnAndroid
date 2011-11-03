@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:gravity="center_horizontal" android:padding="10px"
+	>
+	
+	<TextView android:id="@+id/product_title_label"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="10px" android:layout_marginBottom="5px"
+		style="@style/label" android:text="@string/product_title_label" />
+		
+	<EditText android:id="@+id/product_title"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/product_title_label"
+		android:layout_marginLeft="10px" android:layout_marginBottom="5px"
+		style="@style/edit_text" />	
+		
+	<TextView android:id="@+id/product_description_label"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/product_title"
+		android:layout_marginLeft="10px" android:layout_marginBottom="5px"
+		style="@style/label" android:text="@string/product_description_label" />
+		
+	<EditText android:id="@+id/product_description"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/product_description_label"
+		android:layout_marginLeft="10px" android:layout_marginBottom="5px"
+		style="@style/edit_text" />	
+		
+	<TextView android:id="@+id/product_price_label"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/product_description"
+		android:layout_marginLeft="10px" android:layout_marginBottom="5px"
+		style="@style/label" android:text="@string/product_price_label" />
+		
+	<EditText android:id="@+id/product_price"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/product_price_label"
+		android:layout_marginLeft="10px" android:layout_marginBottom="20px"
+		style="@style/edit_text" />	
+
+    <Button android:id="@+id/product_update_button"  
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"      
+        android:layout_marginLeft="10px" android:layout_marginBottom="5px"
+        android:layout_below="@id/product_price"
+        android:text="@string/product_update_button_label" />
+        
+    <Button android:id="@+id/product_cancel_button"  
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"      
+        android:layout_marginLeft="10px" android:layout_marginBottom="5px"
+        android:layout_below="@id/product_price" android:layout_toRightOf="@id/product_update_button"
+        android:text="@string/product_cancel_button_label" />
+</RelativeLayout>
