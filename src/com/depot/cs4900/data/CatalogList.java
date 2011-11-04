@@ -64,6 +64,25 @@ public class CatalogList {
 
         }
     }
+    
+    public void delete(CatalogEntry catalogEntry) {
+        try {
+            CatalogList newlist = new CatalogList(this._context);
+            for (int i = 0; i < getCatalogEntryCount(); i++) {
+            	CatalogEntry ce = getCatalogEntry(i);
+                if (ce.get_product_id().equals(catalogEntry.get_product_id())) {
+                    Log.d(Constants.LOGTAG, " " + CatalogList.CLASSTAG + "Deleting CatalogEntry");
+                    
+                } else {
+                    newlist.addCatalogEntry(ce);
+                }
+            }
+            this._cataloglist = newlist._cataloglist;
+            persist();
+        } catch (Exception e) {
+
+        }
+    }
 
     // Write to the XML file
     public void persist() {

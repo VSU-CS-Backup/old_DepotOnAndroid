@@ -21,54 +21,56 @@ import android.widget.EditText;
 import com.depot.cs4900.data.CatalogEntry;
 import com.depot.cs4900.data.CatalogList;
 
-public class Product extends Activity{
+public class Product extends Activity {
 	private static final String CLASSTAG = Product.class.getSimpleName();
 	private static final int MENU_DELETE = Menu.FIRST + 1;
 	private static final int MENU_CREATE = Menu.FIRST;
 
 	Prefs myprefs = null;
-	
+
 	private EditText title_text;
 	private EditText desciption_text;
 	private EditText price_text;
-	
+
 	private Button update_button;
 	private Button cancel_button;
-	
+
 	private ProgressDialog progressDialog;
-	 
+
 	private CatalogEntry product;
 	private CatalogList catalog;
 
-    private final Handler handler = new Handler() {
-        @Override
-        public void handleMessage(final Message msg) {
-            Log.v(Constants.LOGTAG, " " + Product.CLASSTAG + " update worker thread done. Now update the local XML file.");
-            progressDialog.dismiss();
-            
-            finish();
-        }
-    };   
+	private final Handler handler = new Handler() {
+		@Override
+		public void handleMessage(final Message msg) {
+			Log.v(Constants.LOGTAG,
+					" "
+							+ Product.CLASSTAG
+							+ " update/delete worker thread done. Now update the local XML file.");
+			progressDialog.dismiss();
 
-    
+			finish();
+		}
+	};
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.product);
-		
+
 		myprefs = new Prefs(getApplicationContext());
 
 		product = CatalogEntry.fromBundle(getIntent().getExtras());
-			
+
 		title_text = (EditText) findViewById(R.id.product_title);
-		title_text.setText( product.get_title() ); 
-		
+		title_text.setText(product.get_title());
+
 		desciption_text = (EditText) findViewById(R.id.product_description);
-		desciption_text.setText( product.get_description() );
-		
+		desciption_text.setText(product.get_description());
+
 		price_text = (EditText) findViewById(R.id.product_price);
-		price_text.setText( product.get_price() ); 
-		
+		price_text.setText(product.get_price());
+
 		// update
 		update_button = (Button) findViewById(R.id.product_update_button);
 		update_button.setOnClickListener(new Button.OnClickListener() {
@@ -82,6 +84,7 @@ public class Product extends Activity{
 
 			public void onClick(View v) {
 				finish();
+
 			}
 		});
 	}
@@ -92,87 +95,124 @@ public class Product extends Activity{
 		Log.v(Constants.LOGTAG + ": " + Product.CLASSTAG, " onResume");
 	}
 
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		super.onCreateOptionsMenu(menu);
-//		menu.add(0, EntrancePage.MENU_SETTINGS, 0, R.string.menu_settings)
-//				.setIcon(android.R.drawable.ic_menu_manage);
-//		return true;
-//	}
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		menu.add(0, Product.MENU_CREATE, 0, R.string.menu_product_create)
+				.setIcon(android.R.drawable.ic_menu_add);
+		menu.add(0, Product.MENU_DELETE, 0, R.string.menu_product_delete)
+				.setIcon(android.R.drawable.ic_menu_delete);
+		return true;
+	}
+
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch (item.getItemId()) {
+			case MENU_CREATE:
+			try {
+				// Perform action on click
+				createProdut();
+			} catch (Exception e) {
+				Log.i(Constants.LOGTAG + ": " + Product.CLASSTAG,
+						"Failed to create a new product [" + e.getMessage() + "]");
+			}
+			return true;
+		case MENU_DELETE:
+			try {
+				// Perform action on click
+				deleteProdut();
+			} catch (Exception e) {
+				Log.i(Constants.LOGTAG + ": " + Product.CLASSTAG,
+						"Failed to delete the product [" + e.getMessage() + "]");
+			}
+			return true;
+		}
+		return super.onMenuItemSelected(featureId, item);
+	}
+
+	private void updateProdut() {
+
+		Log.v(Constants.LOGTAG, " " + Product.CLASSTAG + " updateProduct");
+
+		// Get ready to send the HTTP PUT request to update the Product data on
+		// the server
+		// ...
+
+		this.progressDialog = ProgressDialog.show(this, " Working...",
+				" Updating Product", true, false);
+
+		product.set_title(title_text.getText().toString());
+		product.set_description(desciption_text.getText().toString());
+		product.set_price(price_text.getText().toString());
+
+		catalog = CatalogList.parse(Product.this);
+		catalog.replace(product);
+
+		// update product on the server in a separate thread for
+		// ProgressDialog/Handler
+		// when complete send "empty" message to handler
+		new Thread() {
+			@Override
+			public void run() {
+				// networking stuff ...
+				handler.sendEmptyMessage(0);
+			}
+		}.start();
+	}
 	
-//	public boolean onPrepareOptionsMenu(Menu menu) {
-//
-//		menu.clear();
-//
-//		if(myprefs.getMode() == Constants.AUTO_SYNCH) {
-//			Log.v(Constants.LOGTAG + ": " + EntrancePage.CLASSTAG, " AUTO SYNCH !!!");
-//			
-//			menu.add(0, EntrancePage.MENU_SETTINGS, 0, R.string.menu_settings)
-//			.setIcon(android.R.drawable.ic_menu_manage);
-//			menu.setGroupVisible(0, true);
-//
-//		} else {
-//			Log.v(Constants.LOGTAG + ": " + EntrancePage.CLASSTAG, " LOCAL ONLY !!!");
-//			menu.setGroupVisible(0, false);
-//
-//		}
-//
-//		return super.onPrepareOptionsMenu(menu);
-//
-//	}
+	private void deleteProdut() {
+
+		Log.v(Constants.LOGTAG, " " + Product.CLASSTAG + " deleteProduct");
+
+		// Get ready to send the HTTP DELETE request to update the Product data on
+		// the server
+		// ...
+
+		this.progressDialog = ProgressDialog.show(this, " Working...",
+				" Deleting Product", true, false);
+
+		catalog = CatalogList.parse(Product.this);
+		catalog.delete(product);
+
+		// delete product on the server in a separate thread for
+		// ProgressDialog/Handler
+		// when complete send "empty" message to handler
+		new Thread() {
+			@Override
+			public void run() {
+				// networking stuff ...
+				handler.sendEmptyMessage(0);
+			}
+		}.start();
+	}
 	
-//	@Override
-//	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-//		switch (item.getItemId()) {
-//		case MENU_SETTINGS:
-//			try {
-//				// Perform action on click
-////				startActivityForResult(new Intent(this, ShowSettings.class),
-////						EntrancePage.this.ACTIVITY_SETTINGS);
-//			} catch (Exception e) {
-//				Log.i(Constants.LOGTAG + ": " + EntrancePage.CLASSTAG,
-//						"Failed to Launch Settings [" + e.getMessage() + "]");
-//			}
-//			return true;
-//		}
-//		return super.onMenuItemSelected(featureId, item);
-//	}
+	private void createProdut() {
 
-//	@Override
-//	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.v(Constants.LOGTAG, " " + Product.CLASSTAG + " createProduct");
+
+		// Get ready to send the HTTP POST request to create the new Product on
+		// the server
+		// ...
+
+		this.progressDialog = ProgressDialog.show(this, " Working...",
+				" Creating Product", true, false);
+
+//		product.set_title(title_text.getText().toString());
+//		product.set_description(desciption_text.getText().toString());
+//		product.set_price(price_text.getText().toString());
 //
-//		switch (requestCode) {
-//		case ACTIVITY_SETTINGS:
-//			RefreshUserInfo();
-//			break;
-//		}
-//
-//	}
+//		catalog = CatalogList.parse(Product.this);
+//		catalog.replace(product);
 
-    private void updateProdut() {
-
-        Log.v(Constants.LOGTAG, " " + Product.CLASSTAG + " updateProduct");
-
-        // Get ready to send the HTTP PUT request to update the Product data on the server 
-        // ...
-
-        this.progressDialog = ProgressDialog.show(this, " Working...", " Updating Product", true, false);
-
-        product.set_title(title_text.getText().toString());
-        product.set_description(desciption_text.getText().toString());
-        product.set_price(price_text.getText().toString());
-        
-        catalog = CatalogList.parse(Product.this);
-        catalog.replace(product);
-        
-        // update product on the server in a separate thread for ProgressDialog/Handler
-        // when complete send "empty" message to handler
-        new Thread() {
-            @Override
-            public void run() {
-                // networking stuff ...
-                handler.sendEmptyMessage(0);
-            }
-        }.start();
-    }
+		// create product on the server in a separate thread for
+		// ProgressDialog/Handler
+		// when complete send "empty" message to handler
+		new Thread() {
+			@Override
+			public void run() {
+				// networking stuff ...
+				handler.sendEmptyMessage(0);
+			}
+		}.start();
+	}
 }
