@@ -21,128 +21,163 @@ import com.depot.cs4900.EntrancePage;
 
 public class CatalogList {
 	private static final String CLASSTAG = CatalogList.class.getSimpleName();
-    private Context _context = null;
-    private List<CatalogEntry> _cataloglist;
+	private Context _context = null;
+	private List<CatalogEntry> _cataloglist;
 
-    CatalogList(Context c) {
-        this._context = c;
-        this._cataloglist = new Vector<CatalogEntry>(0);
-    }
+	CatalogList(Context c) {
+		this._context = c;
+		this._cataloglist = new Vector<CatalogEntry>(0);
+	}
 
-    int addCatalogEntry(CatalogEntry catalogEntry) {
-        this._cataloglist.add(catalogEntry);
-        return this._cataloglist.size();
-    }
+	int addCatalogEntry(CatalogEntry catalogEntry) {
+		this._cataloglist.add(catalogEntry);
+		return this._cataloglist.size();
+	}
 
-    CatalogEntry getCatalogEntry(int location) {
-        return this._cataloglist.get(location);
-    }
+	CatalogEntry getCatalogEntry(int location) {
+		return this._cataloglist.get(location);
+	}
 
-    public List<CatalogEntry> getAllCatalogEntries() {
-        return this._cataloglist;
-    }
+	public List<CatalogEntry> getAllCatalogEntries() {
+		return this._cataloglist;
+	}
 
-    int getCatalogEntryCount() {
-        return this._cataloglist.size();
-    }
+	int getCatalogEntryCount() {
+		return this._cataloglist.size();
+	}
 
-    public void replace(CatalogEntry newCatalogEntry) {
-        try {
-            CatalogList newlist = new CatalogList(this._context);
-            for (int i = 0; i < getCatalogEntryCount(); i++) {
-            	CatalogEntry ce = getCatalogEntry(i);
-                if (ce.get_product_id().equals(newCatalogEntry.get_product_id())) {
-                    Log.d(Constants.LOGTAG, " " + CatalogList.CLASSTAG + "Replacing CatalogEntry");
-                    newlist.addCatalogEntry(newCatalogEntry);
-                } else {
-                    newlist.addCatalogEntry(ce);
-                }
-            }
-            this._cataloglist = newlist._cataloglist;
-            persist();
-        } catch (Exception e) {
+	public void replace(CatalogEntry newCatalogEntry) {
+		try {
+			CatalogList newlist = new CatalogList(this._context);
+			for (int i = 0; i < getCatalogEntryCount(); i++) {
+				CatalogEntry ce = getCatalogEntry(i);
+				if (ce.get_product_id()
+						.equals(newCatalogEntry.get_product_id())) {
+					Log.d(Constants.LOGTAG, " " + CatalogList.CLASSTAG
+							+ "Replacing CatalogEntry");
+					newlist.addCatalogEntry(newCatalogEntry);
+				} else {
+					newlist.addCatalogEntry(ce);
+				}
+			}
+			this._cataloglist = newlist._cataloglist;
+			persist();
+		} catch (Exception e) {
 
-        }
-    }
-    
-    public void delete(CatalogEntry catalogEntry) {
-        try {
-            CatalogList newlist = new CatalogList(this._context);
-            for (int i = 0; i < getCatalogEntryCount(); i++) {
-            	CatalogEntry ce = getCatalogEntry(i);
-                if (ce.get_product_id().equals(catalogEntry.get_product_id())) {
-                    Log.d(Constants.LOGTAG, " " + CatalogList.CLASSTAG + "Deleting CatalogEntry");
-                    
-                } else {
-                    newlist.addCatalogEntry(ce);
-                }
-            }
-            this._cataloglist = newlist._cataloglist;
-            persist();
-        } catch (Exception e) {
+		}
+	}
 
-        }
-    }
+	public void delete(CatalogEntry catalogEntry) {
+		try {
+			CatalogList newlist = new CatalogList(this._context);
+			for (int i = 0; i < getCatalogEntryCount(); i++) {
+				CatalogEntry ce = getCatalogEntry(i);
+				if (ce.get_product_id().equals(catalogEntry.get_product_id())) {
+					Log.d(Constants.LOGTAG, " " + CatalogList.CLASSTAG
+							+ "Deleting CatalogEntry");
 
-    // Write to the XML file
-    public void persist() {
-        try {
-            FileOutputStream fos = this._context.openFileOutput(Constants.CATALOG_XML_FILE_NAME, Context.MODE_PRIVATE);
-            fos.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n".getBytes());
-            fos.write("<products>\n".getBytes());            
-            for (int i = 0; i < getCatalogEntryCount(); i++) {
-            	CatalogEntry ce = getCatalogEntry(i);
-                fos.write(ce.toXMLString().getBytes());
-            }
-            fos.write("</products>\n".getBytes());
-            fos.flush();
-            fos.close();
-        } catch (Exception e) {
-            Log.d(Constants.LOGTAG, " " + CatalogList.CLASSTAG + "Failed to write out file?" + e.getMessage());
-        }
-    }
+				} else {
+					newlist.addCatalogEntry(ce);
+				}
+			}
+			this._cataloglist = newlist._cataloglist;
+			persist();
+		} catch (Exception e) {
 
-    // Read from the XML file
-    public static CatalogList parse(Context context) {
-        try {
-            FileInputStream fis = context.openFileInput(Constants.CATALOG_XML_FILE_NAME);
+		}
+	}
 
-            if (fis == null) {
-                return null;
-            }
-            // we need an input source for the sax parser
-            InputSource is = new InputSource(fis);
+	// Under the online mode, the product id is created on the server not on the client.
+	// This method needs to be updated accordingly later...
+	public void create(CatalogEntry catalogEntry) {
+		try {
+			int max_id = 0;
+			CatalogList newlist = new CatalogList(this._context);
+			for (int i = 0; i < getCatalogEntryCount(); i++) {
+				CatalogEntry ce = getCatalogEntry(i);
+				if (Integer.parseInt(ce.get_product_id()) > max_id)
+					max_id = Integer.parseInt(ce.get_product_id());
 
-            // create the factory
-            SAXParserFactory factory = SAXParserFactory.newInstance();
+				newlist.addCatalogEntry(ce);
+			}
+			catalogEntry.set_product_id(new Integer(max_id + 1).toString());
+			newlist.addCatalogEntry(catalogEntry);
+			
+			this._cataloglist = newlist._cataloglist;
+			persist();
+		} catch (Exception e) {
 
-            // create a parser
-            SAXParser parser = factory.newSAXParser();
+		}
+	}
 
-            // create the reader (scanner)
-            XMLReader xmlreader = parser.getXMLReader();
+	// Write to the XML file
+	public void persist() {
+		try {
+			FileOutputStream fos = this._context.openFileOutput(
+					Constants.CATALOG_XML_FILE_NAME, Context.MODE_PRIVATE);
+			fos.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+					.getBytes());
+			fos.write("<products>\n".getBytes());
+			for (int i = 0; i < getCatalogEntryCount(); i++) {
+				CatalogEntry ce = getCatalogEntry(i);
+				fos.write(ce.toXMLString().getBytes());
+			}
+			fos.write("</products>\n".getBytes());
+			fos.flush();
+			fos.close();
+		} catch (Exception e) {
+			Log.d(Constants.LOGTAG, " " + CatalogList.CLASSTAG
+					+ "Failed to write out file?" + e.getMessage());
+		}
+	}
 
-            // instantiate our handler
-            CatalogListHandler clHandler = new CatalogListHandler(context, null /*
-                                                                         * no progress updates when
-                                                                         * reading file
-                                                                         */);
+	// Read from the XML file
+	public static CatalogList parse(Context context) {
+		try {
+			FileInputStream fis = context
+					.openFileInput(Constants.CATALOG_XML_FILE_NAME);
 
-            // assign our handler
-            xmlreader.setContentHandler(clHandler);
+			if (fis == null) {
+				return null;
+			}
+			// we need an input source for the sax parser
+			InputSource is = new InputSource(fis);
 
-            // perform the synchronous parse
-            xmlreader.parse(is);
+			// create the factory
+			SAXParserFactory factory = SAXParserFactory.newInstance();
 
-            // clean up
-            fis.close();
+			// create a parser
+			SAXParser parser = factory.newSAXParser();
 
-            // return our new cataloglist
-            return clHandler.getList();
-        } catch (Exception e) {
-            Log.d(Constants.LOGTAG, " " + CatalogList.CLASSTAG + "Error parsing catalog list xml file: " + e.getMessage());
-            return null;
-        }
-    }
+			// create the reader (scanner)
+			XMLReader xmlreader = parser.getXMLReader();
+
+			// instantiate our handler
+			CatalogListHandler clHandler = new CatalogListHandler(context, null /*
+																				 * no
+																				 * progress
+																				 * updates
+																				 * when
+																				 * reading
+																				 * file
+																				 */);
+
+			// assign our handler
+			xmlreader.setContentHandler(clHandler);
+
+			// perform the synchronous parse
+			xmlreader.parse(is);
+
+			// clean up
+			fis.close();
+
+			// return our new cataloglist
+			return clHandler.getList();
+		} catch (Exception e) {
+			Log.d(Constants.LOGTAG, " " + CatalogList.CLASSTAG
+					+ "Error parsing catalog list xml file: " + e.getMessage());
+			return null;
+		}
+	}
 
 }

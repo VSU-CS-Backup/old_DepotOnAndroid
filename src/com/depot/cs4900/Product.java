@@ -46,7 +46,7 @@ public class Product extends Activity {
 			Log.v(Constants.LOGTAG,
 					" "
 							+ Product.CLASSTAG
-							+ " update/delete worker thread done. Now update the local XML file.");
+							+ " update/delete/create worker thread done. Now update the local XML file.");
 			progressDialog.dismiss();
 
 			finish();
@@ -197,12 +197,12 @@ public class Product extends Activity {
 		this.progressDialog = ProgressDialog.show(this, " Working...",
 				" Creating Product", true, false);
 
-//		product.set_title(title_text.getText().toString());
-//		product.set_description(desciption_text.getText().toString());
-//		product.set_price(price_text.getText().toString());
-//
-//		catalog = CatalogList.parse(Product.this);
-//		catalog.replace(product);
+		product.set_title(title_text.getText().toString());
+		product.set_description(desciption_text.getText().toString());
+		product.set_price(price_text.getText().toString());
+
+		catalog = CatalogList.parse(Product.this);
+		catalog.create(product);
 
 		// create product on the server in a separate thread for
 		// ProgressDialog/Handler
