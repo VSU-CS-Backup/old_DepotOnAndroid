@@ -10,6 +10,4 @@ public class Constants {
 	public static final int LOCAL_ONLY = 1;
 	
 	public static final String CATALOG_XML_FILE_NAME = "catalog.xml";
-	
-	public static final String PRODUCT_ID = "_product_id";
 }

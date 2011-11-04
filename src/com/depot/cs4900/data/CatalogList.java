@@ -46,7 +46,7 @@ public class CatalogList {
         return this._cataloglist.size();
     }
 
-    void replace(CatalogEntry newCatalogEntry) {
+    public void replace(CatalogEntry newCatalogEntry) {
         try {
             CatalogList newlist = new CatalogList(this._context);
             for (int i = 0; i < getCatalogEntryCount(); i++) {

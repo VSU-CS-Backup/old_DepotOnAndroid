@@ -93,7 +93,7 @@ public class CatalogByTitle extends ListActivity {
 //
 //        // startFrom page is not stored in application, for example purposes it's a simple "extra"
         Intent intent = new Intent(Constants.INTENT_ACTION_PRODUCT_DETAIL);
-        intent.putExtra(Constants.PRODUCT_ID, catalog.get((int)id).get_product_id());
+        intent.putExtras(catalog.get((int)id).toBundle());
         startActivity(intent);
     }    
 
