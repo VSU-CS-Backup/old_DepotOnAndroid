@@ -23,7 +23,9 @@
 	<string name="product_price_label">Price</string>
 	<string name="product_update_button_label">Update</string>
 	<string name="product_cancel_button_label">Cancel</string>
+	<string name="product_new_button_label">New</string>
 	
 	<string name="menu_product_delete">Delete</string>
-    <string name="menu_product_create">New</string>
+    <string name="menu_product_create">Create</string>
+
 </resources>
