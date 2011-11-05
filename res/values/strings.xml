@@ -13,6 +13,7 @@
 
 	<string name="catalog">Catalog</string>
 	<string name="product">Product</string>
+	<string name="new_product">New Product</string>
 	
 	<string name="catalog_by_title">Catalog By Title</string>
 	<string name="catalog_by_price">Catalog By Price</string>

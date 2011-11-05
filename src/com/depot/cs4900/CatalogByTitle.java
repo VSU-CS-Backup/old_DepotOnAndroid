@@ -20,15 +20,13 @@ import com.depot.cs4900.data.*;
 
 public class CatalogByTitle extends ListActivity {
     private static final String CLASSTAG = CatalogByTitle.class.getSimpleName();
-//    private static final int MENU_CHANGE_CRITERIA = Menu.FIRST + 1;
-//    private static final int MENU_GET_NEXT_PAGE = Menu.FIRST;
-//    private static final int NUM_RESULTS_PER_PAGE = 8;
+	private static final int MENU_CREATE = Menu.FIRST;
     
     private TextView empty;    
     private ProgressDialog progressDialog;
     private CatalogAdapter catalogAdapter;
     private List<CatalogEntry> catalog;
-
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,35 +53,31 @@ public class CatalogByTitle extends ListActivity {
 		catalogAdapter = new CatalogAdapter(CatalogByTitle.this, catalog, 0); //0: Sort by title
 		setListAdapter(catalogAdapter);
     }    
-//   
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        super.onCreateOptionsMenu(menu);
-//        menu.add(0, ReviewList.MENU_GET_NEXT_PAGE, 0, R.string.menu_get_next_page).setIcon(
-//            android.R.drawable.ic_menu_more);
-//        menu.add(0, ReviewList.MENU_CHANGE_CRITERIA, 0, R.string.menu_change_criteria).setIcon(
-//            android.R.drawable.ic_menu_edit);
-//        return true;
-//    }    
-//
-//    @Override
-//    public boolean onMenuItemSelected(int featureId, MenuItem item) {
-//        Intent intent = null;
-//        switch (item.getItemId()) {
-//            case MENU_GET_NEXT_PAGE:
-//                // increment the startFrom value and call this Activity again
-//                intent = new Intent(Constants.INTENT_ACTION_VIEW_LIST);
-//                intent.putExtra(Constants.STARTFROM_EXTRA, getIntent().getIntExtra(Constants.STARTFROM_EXTRA, 1)
-//                    + ReviewList.NUM_RESULTS_PER_PAGE);
-//                startActivity(intent);
-//                return true;
-//            case MENU_CHANGE_CRITERIA:
-//                intent = new Intent(this, ReviewCriteria.class);
-//                startActivity(intent);
-//                return true;
-//        }
-//        return super.onMenuItemSelected(featureId, item);
-//    }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		menu.add(0, CatalogByTitle.MENU_CREATE, 0, R.string.menu_product_create)
+				.setIcon(android.R.drawable.ic_menu_add);
+		return true;
+	}
+
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch (item.getItemId()) {
+			case MENU_CREATE:
+			try {
+				// Perform action on click
+				Intent intent = new Intent(
+						Constants.INTENT_ACTION_CATALOG_LIST);
+				startActivity(intent);
+			} catch (Exception e) {
+				Log.i(Constants.LOGTAG + ": " + CatalogByTitle.CLASSTAG,
+						"Failed to create a new product [" + e.getMessage() + "]");
+			}
+			return true;
+		}
+		return super.onMenuItemSelected(featureId, item);
+	}
     
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
@@ -95,6 +89,6 @@ public class CatalogByTitle extends ListActivity {
         Intent intent = new Intent(Constants.INTENT_ACTION_PRODUCT_DETAIL);
         intent.putExtras(catalog.get((int)id).toBundle());
         startActivity(intent);
-    }    
+    }
 
 }

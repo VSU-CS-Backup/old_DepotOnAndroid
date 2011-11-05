@@ -11,7 +11,7 @@ public class CatalogEntry {
     private String _price = "";
     private String _popularity = "";
 
-    CatalogEntry() {
+    public CatalogEntry() {
         // constructor
 
     }
