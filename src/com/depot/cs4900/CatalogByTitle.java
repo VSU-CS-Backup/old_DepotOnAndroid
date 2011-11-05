@@ -68,7 +68,7 @@ public class CatalogByTitle extends ListActivity {
 			try {
 				// Perform action on click
 				Intent intent = new Intent(
-						Constants.INTENT_ACTION_CATALOG_LIST);
+						Constants.INTENT_ACTION_NEW_PRODUCT);
 				startActivity(intent);
 			} catch (Exception e) {
 				Log.i(Constants.LOGTAG + ": " + CatalogByTitle.CLASSTAG,

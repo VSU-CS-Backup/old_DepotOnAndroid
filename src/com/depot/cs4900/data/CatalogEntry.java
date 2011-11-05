@@ -64,7 +64,7 @@ public class CatalogEntry {
     public String toXMLString() {
         StringBuilder sb = new StringBuilder("");
         sb.append("<product>");
-        sb.append("<id>" + this._product_id + "</id>");
+        sb.append("<id type=\"integer\">" + this._product_id + "</id>");
         sb.append("<title>" + this._title + "</title>");
         sb.append("<description>" + this._description + "</description>");
         sb.append("<price type=\"decimal\">" + this._price + "</price>");

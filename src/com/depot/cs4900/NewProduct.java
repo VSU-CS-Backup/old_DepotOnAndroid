@@ -102,7 +102,7 @@ public class NewProduct extends Activity {
 		product.set_title(title_text.getText().toString());
 		product.set_description(desciption_text.getText().toString());
 		product.set_price(price_text.getText().toString());
-
+		product.set_popularity("0");
 		catalog = CatalogList.parse(NewProduct.this);
 		catalog.create(product);
 

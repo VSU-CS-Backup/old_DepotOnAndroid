@@ -27,6 +27,6 @@
 	<string name="product_new_button_label">New</string>
 	
 	<string name="menu_product_delete">Delete</string>
-    <string name="menu_product_create">Create</string>
+    <string name="menu_product_create">New Product</string>
 
 </resources>
