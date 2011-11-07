@@ -98,18 +98,6 @@ public class Catalog extends TabActivity {
 						+ "/products.xml", null, null, null);
 			}
 		}.start();
-//
-//		final TabHost tabHost = getTabHost();
-//
-//		tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("By Title")
-//				.setContent(new Intent(Catalog.this, CatalogByTitle.class)));
-//
-//		tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("By Price")
-//				.setContent(new Intent(Catalog.this, CatalogByPrice.class)));
-//
-//		tabHost.addTab(tabHost
-//				.newTabSpec("tab3")
-//				.setIndicator("By Popularity")
-//				.setContent(new Intent(Catalog.this, CatalogByPopularity.class)));
+
 	}
 }
