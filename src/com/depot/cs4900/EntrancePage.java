@@ -156,8 +156,8 @@ public class EntrancePage extends Activity {
 		case MENU_SETTINGS:
 			try {
 				// Perform action on click
-//				startActivityForResult(new Intent(this, ShowSettings.class),
-//						EntrancePage.this.ACTIVITY_SETTINGS);
+				startActivityForResult(new Intent(this, ShowSettings.class),
+						EntrancePage.this.ACTIVITY_SETTINGS);
 			} catch (Exception e) {
 				Log.i(Constants.LOGTAG + ": " + EntrancePage.CLASSTAG,
 						"Failed to Launch Settings [" + e.getMessage() + "]");
@@ -167,38 +167,38 @@ public class EntrancePage extends Activity {
 		return super.onMenuItemSelected(featureId, item);
 	}
 
-//	@Override
-//	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//
-//		switch (requestCode) {
-//		case ACTIVITY_SETTINGS:
-//			RefreshUserInfo();
-//			break;
-//		}
-//
-//	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		switch (requestCode) {
+		case ACTIVITY_SETTINGS:
+			RefreshUserInfo();
+			break;
+		}
+
+	}
 
 	private void RefreshUserInfo() {
 		try {
 
-//			if (this.myprefs.isValid()) {
-//				catalogButton.setText("Books" + " ("
-//						+ this.myprefs.getUserName() + ")");
-//				ordersButton.setText("Orders" + " ("
-//						+ this.myprefs.getUserName() + ")");
-//				ordersButton.setEnabled(true);
-//				usersButton.setText("Users" + " (" + this.myprefs.getUserName()
-//						+ ")");
-//				usersButton.setEnabled(true);
-//			} else {
-//				catalogButton.setText("Catalog");
-//				ordersButton
-//						.setText("Orders (Unknown User, Press Menu to Login)");
-//				ordersButton.setEnabled(false);
-//				usersButton
-//						.setText("Users (Unknown User, Press Menu to Login)");
-//				usersButton.setEnabled(false);
-//			}
+			if (this.myprefs.isValid()) {
+				catalogButton.setText("Books" + " ("
+						+ this.myprefs.getUserName() + ")");
+				ordersButton.setText("Orders" + " ("
+						+ this.myprefs.getUserName() + ")");
+				ordersButton.setEnabled(true);
+				usersButton.setText("Users" + " (" + this.myprefs.getUserName()
+						+ ")");
+				usersButton.setEnabled(true);
+			} else {
+				catalogButton.setText("Catalog");
+				ordersButton
+						.setText("Orders (Unknown User, Press Menu to Login)");
+				ordersButton.setEnabled(false);
+				usersButton
+						.setText("Users (Unknown User, Press Menu to Login)");
+				usersButton.setEnabled(false);
+			}
 
 		} catch (Exception e) {
 

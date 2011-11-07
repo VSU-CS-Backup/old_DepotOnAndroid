@@ -40,9 +40,6 @@ import com.depot.cs4900.Constants;
 /**
  * Wrapper to help make HTTP requests easier - after all, we want to make it nice for the people.
  * 
- * 
- * @author Zhiguang Xu
- * 
  */
 public class HTTPRequestHelper {
 
@@ -61,7 +58,8 @@ public class HTTPRequestHelper {
     // By Xu
     // Important: this is to implement session control
     private static DefaultHttpClient client = new DefaultHttpClient();  
-
+      
+    
     public HTTPRequestHelper(final ResponseHandler<String> responseHandler) {
         this.responseHandler = responseHandler;
     }
@@ -106,7 +104,7 @@ public class HTTPRequestHelper {
     }
     
     /**
-     * Perform an HTTP PUT operation with specified content type.
+     * Perform an HTTP Delete operation with specified content type.
      * 
      */
     public void performDelete(final String contentType, final String url, final String user, final String pass,
@@ -137,7 +135,7 @@ public class HTTPRequestHelper {
         // add user and pass to client credentials if present
         if ((user != null) && (pass != null)) {
             Log.d(Constants.LOGTAG, " " + HTTPRequestHelper.CLASSTAG
-                + " user and pass present, adding credentials to request");
+                + " user and pass present, adding credentials to request. !!!!!!!!!!!!!!!!!!!!!!");
             client.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(user, pass));
         }
 
@@ -218,7 +216,7 @@ public class HTTPRequestHelper {
             execute(client, method);            
         } 
         else if (requestType == HTTPRequestHelper.DELETE_TYPE) {
-            Log.d(Constants.LOGTAG, " " + HTTPRequestHelper.CLASSTAG + " performRequest GET");
+            Log.d(Constants.LOGTAG, " " + HTTPRequestHelper.CLASSTAG + " performRequest DELETE");
             HttpDelete method = new HttpDelete(url);
             execute(client, method);
         } else 	if (requestType == HTTPRequestHelper.GET_TYPE) {
