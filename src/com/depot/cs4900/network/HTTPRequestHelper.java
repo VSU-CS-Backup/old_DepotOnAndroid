@@ -138,7 +138,7 @@ public class HTTPRequestHelper {
                 + " user and pass present, adding credentials to request. !!!!!!!!!!!!!!!!!!!!!!");
             client.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(user, pass));
         }
-
+        
         // process headers using request interceptor
         final Map<String, String> sendHeaders = new HashMap<String, String>();
         if ((headers != null) && (headers.size() > 0)) {

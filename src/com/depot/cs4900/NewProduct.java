@@ -1,6 +1,9 @@
 package com.depot.cs4900;
 
+import java.util.HashMap;
 import java.util.List;
+
+import org.apache.http.client.ResponseHandler;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -20,6 +23,7 @@ import android.widget.EditText;
 
 import com.depot.cs4900.data.CatalogEntry;
 import com.depot.cs4900.data.CatalogList;
+import com.depot.cs4900.network.HTTPRequestHelper;
 
 public class NewProduct extends Activity {
 	private static final String CLASSTAG = NewProduct.class.getSimpleName();
@@ -92,13 +96,28 @@ public class NewProduct extends Activity {
 
 		Log.v(Constants.LOGTAG, " " + NewProduct.CLASSTAG + " updateProduct");
 
-		// Get ready to send the HTTP PUT request to update the Product data on
-		// the server
-		// ...
-
 		this.progressDialog = ProgressDialog.show(this, " Working...",
 				" Creating Product", true, false);
+		
+		// Get ready to send the HTTP PUT request to update the Product data on
+		// the server
+		
+		final ResponseHandler<String> responseHandler = HTTPRequestHelper
+				.getResponseHandlerInstance(this.handler);
+		final HashMap<String, String> params = new HashMap<String, String>();
+		if (!title_text.getText().toString().equals("")) {
+			params.put("title", title_text.getText().toString());
+		}
+		if (!desciption_text.getText().toString().equals("")) {
+			params.put("description", desciption_text.getText().toString());
+		}
+		if (!price_text.getText().toString().equals("")) {
+			params.put("price", price_text.getText().toString());
+		}
+		params.put("image_url", "unknown.jpg");
+		
 
+		// Create a new product locally
 		product.set_title(title_text.getText().toString());
 		product.set_description(desciption_text.getText().toString());
 		product.set_price(price_text.getText().toString());
@@ -113,6 +132,13 @@ public class NewProduct extends Activity {
 			@Override
 			public void run() {
 				// networking stuff ...
+				HTTPRequestHelper helper = new HTTPRequestHelper(
+						responseHandler);
+				if (myprefs.isValid() && !myprefs.getUserName().equals("admin")){
+					helper.performPost(HTTPRequestHelper.MIME_TEXT_PLAIN, myprefs.getServer() + "/products.xml", 
+							null, null, null, params);
+				}	
+				
 				handler.sendEmptyMessage(0);
 			}
 		}.start();
