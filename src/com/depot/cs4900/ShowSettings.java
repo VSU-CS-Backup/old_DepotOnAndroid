@@ -225,8 +225,10 @@ public class ShowSettings extends Activity {
 				HTTPRequestHelper helper = new HTTPRequestHelper(
 						responseHandler);
 				if (method.equals("POST")) {
+					//helper.performPost(HTTPRequestHelper.MIME_TEXT_PLAIN, url,
+					//		null, null, null, params);
 					helper.performPost(HTTPRequestHelper.MIME_TEXT_PLAIN, url,
-							null, null, null, params);
+							user, pass, null, params);
 				} else 
 				if (method.equals("DELETE")){
 					helper.performDelete(HTTPRequestHelper.MIME_TEXT_PLAIN, url, null, null, null, null);

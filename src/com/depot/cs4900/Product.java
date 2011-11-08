@@ -1,6 +1,9 @@
 package com.depot.cs4900;
 
+import java.util.HashMap;
 import java.util.List;
+
+import org.apache.http.client.ResponseHandler;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -20,6 +23,7 @@ import android.widget.EditText;
 
 import com.depot.cs4900.data.CatalogEntry;
 import com.depot.cs4900.data.CatalogList;
+import com.depot.cs4900.network.HTTPRequestHelper;
 
 public class Product extends Activity {
 	private static final String CLASSTAG = Product.class.getSimpleName();
@@ -124,7 +128,19 @@ public class Product extends Activity {
 
 		// Get ready to send the HTTP PUT request to update the Product data on
 		// the server
-		// ...
+		final ResponseHandler<String> responseHandler = HTTPRequestHelper
+				.getResponseHandlerInstance(this.handler);
+		final HashMap<String, String> params = new HashMap<String, String>();
+		if (!title_text.getText().toString().equals("")) {
+			params.put("title", title_text.getText().toString());
+		}
+		if (!desciption_text.getText().toString().equals("")) {
+			params.put("description", desciption_text.getText().toString());
+		}
+		if (!price_text.getText().toString().equals("")) {
+			params.put("price", price_text.getText().toString());
+		}
+		params.put("image_url", "unknown.jpg");
 
 		this.progressDialog = ProgressDialog.show(this, " Working...",
 				" Updating Product", true, false);
@@ -143,6 +159,10 @@ public class Product extends Activity {
 			@Override
 			public void run() {
 				// networking stuff ...
+				HTTPRequestHelper helper = new HTTPRequestHelper(
+						responseHandler);
+				helper.performPut(HTTPRequestHelper.MIME_TEXT_PLAIN, myprefs.getServer() + "/products/" + product.get_product_id() + ".xml", null, null, null, params);
+
 				handler.sendEmptyMessage(0);
 			}
 		}.start();
@@ -154,7 +174,8 @@ public class Product extends Activity {
 
 		// Get ready to send the HTTP DELETE request to update the Product data on
 		// the server
-		// ...
+		final ResponseHandler<String> responseHandler = HTTPRequestHelper
+				.getResponseHandlerInstance(this.handler);
 
 		this.progressDialog = ProgressDialog.show(this, " Working...",
 				" Deleting Product", true, false);
@@ -169,6 +190,9 @@ public class Product extends Activity {
 			@Override
 			public void run() {
 				// networking stuff ...
+				HTTPRequestHelper helper = new HTTPRequestHelper(
+						responseHandler);
+				helper.performDelete(HTTPRequestHelper.MIME_TEXT_PLAIN, myprefs.getServer() + "/products/" + product.get_product_id() + ".xml", null, null, null, null);
 				handler.sendEmptyMessage(0);
 			}
 		}.start();

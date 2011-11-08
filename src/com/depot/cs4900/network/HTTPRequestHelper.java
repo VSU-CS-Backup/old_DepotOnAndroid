@@ -135,7 +135,7 @@ public class HTTPRequestHelper {
         // add user and pass to client credentials if present
         if ((user != null) && (pass != null)) {
             Log.d(Constants.LOGTAG, " " + HTTPRequestHelper.CLASSTAG
-                + " user and pass present, adding credentials to request. !!!!!!!!!!!!!!!!!!!!!!");
+                + " user and pass present, adding credentials to request.");
             client.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(user, pass));
         }
         
