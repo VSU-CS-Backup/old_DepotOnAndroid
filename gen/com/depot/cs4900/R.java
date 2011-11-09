@@ -24,8 +24,8 @@ public final class R {
         public static final int local=0x7f070007;
         public static final int mode=0x7f070005;
         public static final int ordersbutton=0x7f070003;
-        public static final int password=0x7f070016;
-        public static final int password_label=0x7f070015;
+        public static final int password=0x7f070017;
+        public static final int password_label=0x7f070016;
         public static final int product_cancel_button=0x7f07000f;
         public static final int product_description=0x7f07000b;
         public static final int product_description_label=0x7f07000a;
@@ -35,12 +35,13 @@ public final class R {
         public static final int product_title=0x7f070009;
         public static final int product_title_label=0x7f070008;
         public static final int product_update_button=0x7f070010;
+        public static final int save_without_login_button=0x7f070013;
         public static final int server_url=0x7f070012;
         public static final int server_url_label=0x7f070011;
-        public static final int set_button=0x7f070017;
+        public static final int set_button=0x7f070018;
         public static final int synch=0x7f070006;
-        public static final int user_name=0x7f070014;
-        public static final int user_name_label=0x7f070013;
+        public static final int user_name=0x7f070015;
+        public static final int user_name_label=0x7f070014;
         public static final int usersbutton=0x7f070004;
     }
     public static final class layout {

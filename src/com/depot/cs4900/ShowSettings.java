@@ -26,16 +26,16 @@ import android.widget.Toast;
 import com.depot.cs4900.data.CatalogList;
 import com.depot.cs4900.network.*;
 
-
 public class ShowSettings extends Activity {
 	private static final String CLASSTAG = ShowSettings.class.getSimpleName();
-	
+
 	Prefs myprefs = null;
 	AlertDialog.Builder adb;// = new AlertDialog.Builder(this);
 
 	EditText serverurl;
 	EditText user_name;
 	EditText password;
+	Button saveWithoutLoggingInButton;
 	Button savebutton;
 
 	private ProgressDialog progressDialog;
@@ -56,9 +56,10 @@ public class ShowSettings extends Activity {
 				ShowSettings.this.myprefs.setValid(false);
 				Toast.makeText(ShowSettings.this, "Invalid. Log in again.",
 						Toast.LENGTH_SHORT).show();
-			} else { // A successful response to either a login or a logout request
+			} else { // A successful response to either a login or a logout
+						// request
 				// save off values
-				if (!ShowSettings.this.myprefs.isValid()){
+				if (!ShowSettings.this.myprefs.isValid()) {
 					ShowSettings.this.myprefs.setServer(serverurl.getText()
 							.toString());
 					ShowSettings.this.myprefs.setUserName(user_name.getText()
@@ -69,8 +70,7 @@ public class ShowSettings extends Activity {
 					ShowSettings.this.myprefs.save();
 					savebutton.setText("Log Out");
 
-				}
-				else{
+				} else {
 					ShowSettings.this.myprefs.setServer(serverurl.getText()
 							.toString());
 					ShowSettings.this.myprefs.setUserName("Unknown");
@@ -80,7 +80,7 @@ public class ShowSettings extends Activity {
 					savebutton.setText("Log In");
 				}
 				// we're done!
-				finish();	
+				finish();
 			}
 		}
 	};
@@ -95,6 +95,28 @@ public class ShowSettings extends Activity {
 
 		this.adb = new AlertDialog.Builder(this);
 
+		saveWithoutLoggingInButton = (Button) findViewById(R.id.save_without_login_button);
+		// create anonymous click listener to handle the
+		// "Save Server Url Without Logging In"
+		saveWithoutLoggingInButton
+				.setOnClickListener(new Button.OnClickListener() {
+
+					public void onClick(View v) {
+						serverurl = (EditText) findViewById(R.id.server_url);
+						if (serverurl.getText().length() == 0) {
+
+							AlertDialog ad = ShowSettings.this.adb.create();
+							ad.setMessage("Please Enter The URL of The Server");
+							ad.show();
+							return;
+						}
+						ShowSettings.this.myprefs.setServer(serverurl.getText()
+								.toString());
+						ShowSettings.this.myprefs.save();
+						finish();
+					}
+				});
+
 		savebutton = (Button) findViewById(R.id.set_button);
 
 		// create anonymous click listener to handle the "save"
@@ -103,7 +125,8 @@ public class ShowSettings extends Activity {
 			public void onClick(View v) {
 				try {
 					if (ShowSettings.this.savebutton.getText().toString()
-							.equals("Log In")) { // Log in
+							.equals("Log In")) { // Log
+													// in
 
 						// get the string and do something with it.
 
@@ -145,13 +168,14 @@ public class ShowSettings extends Activity {
 							return;
 						}
 						performRequest(serverurl.getText().toString()
-								+ "/logout.xml", "DELETE",null, null);
+								+ "/logout.xml", "DELETE", null, null);
 					}
 
 				} catch (Exception e) {
-					Log.i(ShowSettings.this.CLASSTAG, "Failed to Save Settings ["
-							+ e.getMessage() + "]");
+					Log.i(ShowSettings.this.CLASSTAG,
+							"Failed to Save Settings [" + e.getMessage() + "]");
 				}
+
 			}
 		});
 	}
@@ -160,7 +184,9 @@ public class ShowSettings extends Activity {
 	protected void onResume() {
 		super.onResume();
 		Log.v(Constants.LOGTAG, " " + ShowSettings.CLASSTAG + " onResume");
-
+		if (this.myprefs.isValid()) {
+			this.saveWithoutLoggingInButton.setEnabled(false);
+		}
 		// load screen
 		PopulateScreen();
 	}
@@ -175,10 +201,11 @@ public class ShowSettings extends Activity {
 			user_name.setText(this.myprefs.getUserName());
 			password.setText(this.myprefs.getPassword());
 
-			if (this.myprefs.isValid())
+			if (this.myprefs.isValid()) {
 				this.savebutton.setText("Log Out");
-			else
+			} else {
 				this.savebutton.setText("Log In");
+			}
 		} catch (Exception e) {
 
 		}
@@ -227,11 +254,10 @@ public class ShowSettings extends Activity {
 				if (method.equals("POST")) {
 					helper.performPost(HTTPRequestHelper.MIME_TEXT_PLAIN, url,
 							null, null, null, params);
-				} else 
-				if (method.equals("DELETE")){
-					helper.performDelete(HTTPRequestHelper.MIME_TEXT_PLAIN, url, null, null, null, null);
-				}
-				else{
+				} else if (method.equals("DELETE")) {
+					helper.performDelete(HTTPRequestHelper.MIME_TEXT_PLAIN,
+							url, null, null, null, null);
+				} else {
 					Message msg = handler.obtainMessage();
 					Bundle bundle = new Bundle();
 					bundle.putString("RESPONSE", "ERROR - see logcat");

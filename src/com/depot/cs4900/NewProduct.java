@@ -2,6 +2,8 @@ package com.depot.cs4900;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Pattern;  
+import java.util.Scanner;
 
 import org.apache.http.client.ResponseHandler;
 
@@ -51,6 +53,36 @@ public class NewProduct extends Activity {
 							+ " create worker thread done.");
 			progressDialog.dismiss();
 
+
+			if (myprefs.getMode() == Constants.AUTO_SYNCH) {
+				String bundleResult = msg.getData().getString("RESPONSE");
+
+				// Pattern pattern =  Pattern.compile("<id type=\"integer\">\\d+<id>");
+				Scanner s = new Scanner(bundleResult);
+				int id = 0;
+				while (s.hasNextLine()){
+					String line = s.nextLine();
+					if (line.contains("id type")){
+						Scanner s1= new Scanner(line).useDelimiter("\\D+");
+
+						id = s1.nextInt();
+						break;
+					}			
+				}
+				
+				//Bundle b = msg.getData();
+				//CatalogEntry ce = CatalogEntry.fromBundle(b);
+				
+				catalog = CatalogList.parse(NewProduct.this);
+				catalog.delete(product);
+				product.set_product_id(new Integer(id).toString());
+				catalog.create(product);
+				Log.v(Constants.LOGTAG,
+						" "
+						+ NewProduct.CLASSTAG + " "
+						+ product + ", ~~~~~~~~~~~~~~~~~~~~~~~~~");
+
+			}
 			finish();
 		}
 	};
@@ -90,6 +122,14 @@ public class NewProduct extends Activity {
 	protected void onResume() {
 		super.onResume();
 		Log.v(Constants.LOGTAG + ": " + NewProduct.CLASSTAG, " onResume");
+		if (myprefs.getMode() == Constants.AUTO_SYNCH) {
+			this.setTitle(this.CLASSTAG+ " - Online");
+			if (myprefs.isValid())
+				this.setTitle(this.getTitle() + ": " + myprefs.getUserName());
+			else
+				this.setTitle(this.getTitle() + ": Unknown User");
+		} else
+			this.setTitle(this.CLASSTAG + " - Offline");
 	}
 
 	private void createProdut() {
@@ -118,6 +158,7 @@ public class NewProduct extends Activity {
 		
 
 		// Create a new product locally
+		product.set_product_id("-1");
 		product.set_title(title_text.getText().toString());
 		product.set_description(desciption_text.getText().toString());
 		product.set_price(price_text.getText().toString());
@@ -134,12 +175,12 @@ public class NewProduct extends Activity {
 				// networking stuff ...
 				HTTPRequestHelper helper = new HTTPRequestHelper(
 						responseHandler);
-				if (myprefs.isValid() && !myprefs.getUserName().equals("admin")){
+				if (myprefs.getMode() == Constants.AUTO_SYNCH && myprefs.isValid() && !myprefs.getUserName().equals("admin")){
 					helper.performPost(HTTPRequestHelper.MIME_TEXT_PLAIN, myprefs.getServer() + "/products.xml", 
 							null, null, null, params);
 				}	
-				
-				handler.sendEmptyMessage(0);
+				else
+					handler.sendEmptyMessage(0);
 			}
 		}.start();
 	}

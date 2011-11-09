@@ -46,10 +46,8 @@ public class Product extends Activity {
 	private final Handler handler = new Handler() {
 		@Override
 		public void handleMessage(final Message msg) {
-			Log.v(Constants.LOGTAG,
-							" "
-							+ Product.CLASSTAG
-							+ " update/delete worker thread done.");
+			Log.v(Constants.LOGTAG, " " + Product.CLASSTAG
+					+ " update/delete worker thread done.");
 			progressDialog.dismiss();
 
 			finish();
@@ -95,6 +93,15 @@ public class Product extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		if (myprefs.getMode() == Constants.AUTO_SYNCH) {
+			this.setTitle(this.CLASSTAG+ " - Online");
+			if (myprefs.isValid())
+				this.setTitle(this.getTitle() + ": " + myprefs.getUserName());
+			else
+				this.setTitle(this.getTitle() + ": Unknown User");
+		} else
+			this.setTitle(this.CLASSTAG + " - Offline");
+		
 		Log.v(Constants.LOGTAG + ": " + Product.CLASSTAG, " onResume");
 	}
 
@@ -159,20 +166,28 @@ public class Product extends Activity {
 			@Override
 			public void run() {
 				// networking stuff ...
-				HTTPRequestHelper helper = new HTTPRequestHelper(
-						responseHandler);
-				helper.performPut(HTTPRequestHelper.MIME_TEXT_PLAIN, myprefs.getServer() + "/products/" + product.get_product_id() + ".xml", null, null, null, params);
-
+				if (myprefs.getMode() == Constants.AUTO_SYNCH
+						&& myprefs.isValid()
+						&& !myprefs.getUserName().equals("admin")) {
+					HTTPRequestHelper helper = new HTTPRequestHelper(
+							responseHandler);
+					helper.performPut(
+							HTTPRequestHelper.MIME_TEXT_PLAIN,
+							myprefs.getServer() + "/products/"
+									+ product.get_product_id() + ".xml", null,
+							null, null, params);
+				}
 				handler.sendEmptyMessage(0);
 			}
 		}.start();
 	}
-	
+
 	private void deleteProdut() {
 
 		Log.v(Constants.LOGTAG, " " + Product.CLASSTAG + " deleteProduct");
 
-		// Get ready to send the HTTP DELETE request to update the Product data on
+		// Get ready to send the HTTP DELETE request to update the Product data
+		// on
 		// the server
 		final ResponseHandler<String> responseHandler = HTTPRequestHelper
 				.getResponseHandlerInstance(this.handler);
@@ -190,12 +205,20 @@ public class Product extends Activity {
 			@Override
 			public void run() {
 				// networking stuff ...
-				HTTPRequestHelper helper = new HTTPRequestHelper(
-						responseHandler);
-				helper.performDelete(HTTPRequestHelper.MIME_TEXT_PLAIN, myprefs.getServer() + "/products/" + product.get_product_id() + ".xml", null, null, null, null);
+				if (myprefs.getMode() == Constants.AUTO_SYNCH
+						&& myprefs.isValid()
+						&& !myprefs.getUserName().equals("admin")) {
+					HTTPRequestHelper helper = new HTTPRequestHelper(
+							responseHandler);
+					helper.performDelete(
+							HTTPRequestHelper.MIME_TEXT_PLAIN,
+							myprefs.getServer() + "/products/"
+									+ product.get_product_id() + ".xml", null,
+							null, null, null);
+				}
 				handler.sendEmptyMessage(0);
 			}
 		}.start();
 	}
-	
+
 }

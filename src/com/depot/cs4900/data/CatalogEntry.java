@@ -58,7 +58,7 @@ public class CatalogEntry {
     
     @Override
     public String toString() {
-        return this._title + ",\t$" + this._price;
+        return this._product_id + ",\t" + this._title + ",\t$" + this._price;
     }
 
     public String toXMLString() {

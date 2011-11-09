@@ -26,11 +26,11 @@ public class EntrancePage extends Activity {
 	private ViewFlipper mFlipper;
 
 	Prefs myprefs = null;
-	
+
 	private Button catalogButton;
 	private Button ordersButton;
 	private Button usersButton;
-	
+
 	private RadioButton auto_synch_button;
 	private RadioButton local_only_button;
 
@@ -45,7 +45,7 @@ public class EntrancePage extends Activity {
 		mFlipper.setOutAnimation(AnimationUtils.loadAnimation(this,
 				R.anim.push_left_out));
 		mFlipper.startFlipping();
-		
+
 		myprefs = new Prefs(getApplicationContext());
 
 		// catalog
@@ -53,14 +53,14 @@ public class EntrancePage extends Activity {
 		catalogButton.setOnClickListener(new Button.OnClickListener() {
 
 			public void onClick(View v) {
-				try {					
+				try {
 					Intent intent = new Intent(
 							Constants.INTENT_ACTION_CATALOG_LIST);
 					startActivity(intent);
 
 				} catch (Exception e) {
-					Log.i(Constants.LOGTAG + ": " + EntrancePage.CLASSTAG, "Failed to load the catalog"
-							+ e.getMessage() + "]");
+					Log.i(Constants.LOGTAG + ": " + EntrancePage.CLASSTAG,
+							"Failed to load the catalog" + e.getMessage() + "]");
 				}
 			}
 		});
@@ -87,7 +87,7 @@ public class EntrancePage extends Activity {
 				try {
 
 				} catch (Exception e) {
-					Log.i(Constants.LOGTAG + ": " +EntrancePage.CLASSTAG,
+					Log.i(Constants.LOGTAG + ": " + EntrancePage.CLASSTAG,
 							"Failed to load users" + e.getMessage() + "]");
 				}
 			}
@@ -97,21 +97,29 @@ public class EntrancePage extends Activity {
 		auto_synch_button.setOnClickListener(new Button.OnClickListener() {
 
 			public void onClick(View v) {
-				Log.v(Constants.LOGTAG + ": " + EntrancePage.CLASSTAG, " AUTO SYNCH !!!");
+				Log.v(Constants.LOGTAG + ": " + EntrancePage.CLASSTAG,
+						" AUTO SYNCH !!!");
 				myprefs.setMode(Constants.AUTO_SYNCH);
 				myprefs.save();
 			}
 		});
-		
+
 		local_only_button = (RadioButton) findViewById(R.id.local);
 		local_only_button.setOnClickListener(new Button.OnClickListener() {
 
 			public void onClick(View v) {
-				Log.v(Constants.LOGTAG + ": " + EntrancePage.CLASSTAG, " LOCAL ONLY !!!");
+				Log.v(Constants.LOGTAG + ": " + EntrancePage.CLASSTAG,
+						" LOCAL ONLY !!!");
 				myprefs.setMode(Constants.LOCAL_ONLY);
 				myprefs.save();
 			}
 		});
+
+		if (myprefs.getMode() == Constants.AUTO_SYNCH)
+			auto_synch_button.setChecked(true);
+		else
+			local_only_button.setChecked(true); 
+
 	}
 
 	@Override
@@ -121,27 +129,29 @@ public class EntrancePage extends Activity {
 		RefreshUserInfo();
 	}
 
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		super.onCreateOptionsMenu(menu);
-//		menu.add(0, EntrancePage.MENU_SETTINGS, 0, R.string.menu_settings)
-//				.setIcon(android.R.drawable.ic_menu_manage);
-//		return true;
-//	}
-	
+	// @Override
+	// public boolean onCreateOptionsMenu(Menu menu) {
+	// super.onCreateOptionsMenu(menu);
+	// menu.add(0, EntrancePage.MENU_SETTINGS, 0, R.string.menu_settings)
+	// .setIcon(android.R.drawable.ic_menu_manage);
+	// return true;
+	// }
+
 	public boolean onPrepareOptionsMenu(Menu menu) {
 
 		menu.clear();
 
-		if(myprefs.getMode() == Constants.AUTO_SYNCH) {
-			Log.v(Constants.LOGTAG + ": " + EntrancePage.CLASSTAG, " AUTO SYNCH !!!");
-			
+		if (myprefs.getMode() == Constants.AUTO_SYNCH) {
+			Log.v(Constants.LOGTAG + ": " + EntrancePage.CLASSTAG,
+					" AUTO SYNCH !!!");
+
 			menu.add(0, EntrancePage.MENU_SETTINGS, 0, R.string.menu_settings)
-			.setIcon(android.R.drawable.ic_menu_manage);
+					.setIcon(android.R.drawable.ic_menu_manage);
 			menu.setGroupVisible(0, true);
 
 		} else {
-			Log.v(Constants.LOGTAG + ": " + EntrancePage.CLASSTAG, " LOCAL ONLY !!!");
+			Log.v(Constants.LOGTAG + ": " + EntrancePage.CLASSTAG,
+					" LOCAL ONLY !!!");
 			menu.setGroupVisible(0, false);
 
 		}
@@ -149,7 +159,7 @@ public class EntrancePage extends Activity {
 		return super.onPrepareOptionsMenu(menu);
 
 	}
-	
+
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch (item.getItemId()) {
