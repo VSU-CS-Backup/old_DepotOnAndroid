@@ -51,7 +51,12 @@ public class CatalogByPrice extends ListActivity {
         Log.v(Constants.LOGTAG, " " + CatalogByPrice.CLASSTAG + " onResume");
 
         // Parse the data from catalog.xml file
-        catalog = CatalogList.parse(this).getAllCatalogEntries();
+        CatalogList cl = CatalogList.parse(this);
+        if (cl==null){
+        	empty.setText("No Data");
+        	return;
+        }
+        catalog = cl.getAllCatalogEntries();
 		catalogAdapter = new CatalogAdapter(CatalogByPrice.this, catalog, 1); //1: Sort by price
 		setListAdapter(catalogAdapter);
     }    

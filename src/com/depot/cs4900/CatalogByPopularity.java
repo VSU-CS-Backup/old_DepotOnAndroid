@@ -51,7 +51,12 @@ public class CatalogByPopularity extends ListActivity {
         Log.v(Constants.LOGTAG, " " + CatalogByPopularity.CLASSTAG + " onResume");
 
         // Parse the data from catalog.xml file
-        catalog = CatalogList.parse(this).getAllCatalogEntries();
+        CatalogList cl = CatalogList.parse(this);
+        if (cl==null){
+        	empty.setText("No Data");
+        	return;
+        }
+        catalog = cl.getAllCatalogEntries();
 		catalogAdapter = new CatalogAdapter(CatalogByPopularity.this, catalog, 2); //2: Sort by popularity
 		setListAdapter(catalogAdapter);
     }    

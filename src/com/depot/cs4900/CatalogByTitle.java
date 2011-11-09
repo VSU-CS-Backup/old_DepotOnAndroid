@@ -49,7 +49,12 @@ public class CatalogByTitle extends ListActivity {
         Log.v(Constants.LOGTAG, " " + CatalogByTitle.CLASSTAG + " onResume");
 
         // Parse the data from catalog.xml file
-        catalog = CatalogList.parse(this).getAllCatalogEntries();
+        CatalogList cl = CatalogList.parse(this);
+        if (cl==null){
+        	empty.setText("No Data");
+        	return;
+        }
+        catalog = cl.getAllCatalogEntries();
 		catalogAdapter = new CatalogAdapter(CatalogByTitle.this, catalog, 0); //0: Sort by title
 		setListAdapter(catalogAdapter);
     }    
